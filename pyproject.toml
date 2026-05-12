@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tibet-conformance-vectors"
-version = "0.1.0"
+version = "0.1.1"
 description = "Canonical conformance vectors and IETF drafts for the TIBET continuity ecosystem — reference inputs for external evaluation of tibet-continuityd, tibet-drop, and related implementations."
 readme = "README.md"
 license = {text = "MIT"}

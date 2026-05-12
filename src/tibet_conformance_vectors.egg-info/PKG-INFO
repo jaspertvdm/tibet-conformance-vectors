@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: tibet-conformance-vectors
-Version: 0.1.0
+Version: 0.1.1
 Summary: Canonical conformance vectors and IETF drafts for the TIBET continuity ecosystem — reference inputs for external evaluation of tibet-continuityd, tibet-drop, and related implementations.
 Author-email: Jasper van de Meent <info@humotica.com>, Root AI <root_idd@humotica.nl>, Codex <codex@humotica.nl>
 License: MIT

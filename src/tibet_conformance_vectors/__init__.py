@@ -21,7 +21,7 @@ from importlib import resources
 from typing import Iterator, Optional
 
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = "Jasper van de Meent, Root AI, Codex"
 
 
@@ -95,3 +95,17 @@ __all__ = [
     "get_vector",
     "iter_categories",
 ]
+
+
+def drafts_path():
+    """Return Path to bundled IETF drafts directory (v0.1.1+)."""
+    from importlib import resources
+    return resources.files("tibet_conformance_vectors").joinpath("drafts")
+
+
+def list_drafts() -> list[str]:
+    """List IETF draft files bundled with this package (v0.1.1+)."""
+    return sorted(
+        p.name for p in drafts_path().iterdir()
+        if p.is_file() and not p.name.startswith("__")
+    )
