@@ -1,0 +1,11 @@
+LICENSE
+README.md
+pyproject.toml
+src/tibet_conformance_vectors/__init__.py
+src/tibet_conformance_vectors.egg-info/PKG-INFO
+src/tibet_conformance_vectors.egg-info/SOURCES.txt
+src/tibet_conformance_vectors.egg-info/dependency_links.txt
+src/tibet_conformance_vectors.egg-info/entry_points.txt
+src/tibet_conformance_vectors.egg-info/top_level.txt
+src/tibet_conformance_vectors/data/__init__.py
+src/tibet_conformance_vectors/data/v1.jsonl

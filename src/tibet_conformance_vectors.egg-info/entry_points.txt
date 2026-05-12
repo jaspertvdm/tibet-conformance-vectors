@@ -1,0 +1,2 @@
+[console_scripts]
+tibet-vectors = tibet_conformance_vectors.cli:main

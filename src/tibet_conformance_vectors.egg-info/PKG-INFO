@@ -1,0 +1,146 @@
+Metadata-Version: 2.4
+Name: tibet-conformance-vectors
+Version: 0.1.0
+Summary: Canonical conformance vectors and IETF drafts for the TIBET continuity ecosystem — reference inputs for external evaluation of tibet-continuityd, tibet-drop, and related implementations.
+Author-email: Jasper van de Meent <info@humotica.com>, Root AI <root_idd@humotica.nl>, Codex <codex@humotica.nl>
+License: MIT
+Project-URL: Homepage, https://humotica.com
+Project-URL: IETF, https://datatracker.ietf.org/doc/draft-vandemeent-tibet-causal-time/
+Project-URL: Repository, https://github.com/jaspertvdm/tibet-conformance-vectors
+Keywords: tibet,conformance,test-vectors,ietf-drafts,causal-time,semantic-surface-manifest,audit,provenance,humotica
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Information Technology
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Security :: Cryptography
+Classifier: Topic :: System :: Monitoring
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+
+# tibet-conformance-vectors
+
+> **Canonical conformance vectors and IETF drafts for the TIBET continuity ecosystem.**
+
+This package ships the reference inputs that external evaluators and
+implementers need to validate any tibet-* implementation against the
+documented spec, without requiring access to the Humotica internal
+monorepo.
+
+## Why it exists
+
+Independent peer-reviewers (= Red Specter Security Research,
+RS-2026-001) flagged that the previous evaluation kit pointed at an
+internal monorepo path:
+
+```
+FIXTURE_BASE=$REPO_ROOT/sandbox/ai/codex/continuityd-test-packages/
+```
+
+which is not reachable from a fresh PyPI install on a clean Kali host.
+This package fixes that distribution gap. Conformance vectors and
+IETF drafts now ship together as a public, citable artifact.
+
+## What's inside
+
+### Conformance vectors (`data/v1.jsonl`)
+
+Reference vectors for the five intake categories the TIBET stack
+distinguishes:
+
+| Vector ID         | Category    | Scope                   |
+|-------------------|-------------|-------------------------|
+| `trusted-001`     | trusted     | transport-canonical     |
+| `triage-001`      | triage      | transport-canonical     |
+| `reseal-001`      | reseal      | transport-canonical     |
+| `quarantine-001`  | quarantine  | transport-canonical     |
+| `reject-001`      | reject      | transport-canonical     |
+
+Each vector carries:
+
+- `vector_id`, `category`, `scope`, `vector_version`
+- `filename` (= semantic surface manifest fields)
+- `content_base64` (= raw bytes that should produce the expected disposition)
+- `expected_audit` (= the audit record an implementation MUST emit)
+
+### IETF drafts (`drafts/`)
+
+- `draft-vandemeent-tibet-causal-time-00.txt` — Causal Time Substrate
+- `draft-vandemeent-tibet-semantic-surface-manifest-00.txt` — SSM routing layer
+
+Both submitted to the IETF datatracker; this package keeps a stable
+local copy aligned with each vector revision.
+
+### Eval kit examples (`examples/`)
+
+Runnable scripts that demonstrate how to validate an implementation:
+
+```bash
+python -m tibet_conformance_vectors.check /path/to/audit.jsonl
+```
+
+## Install
+
+```bash
+pip install tibet-conformance-vectors
+```
+
+## Programmatic use
+
+```python
+from tibet_conformance_vectors import load_vectors, get_vector
+
+# Load all vectors from the bundled v1 set
+vectors = load_vectors("v1")
+
+# Or pull a single vector by id
+trusted = get_vector("trusted-001", version="v1")
+print(trusted["expected_audit"]["disposition_hint"])
+# → 'trusted-candidate'
+```
+
+## How to validate an implementation
+
+Given an implementation (= tibet-continuityd or any compatible
+daemon) and its audit JSONL output:
+
+```python
+from tibet_conformance_vectors import check_audit
+
+ok, report = check_audit(
+    audit_path="/var/log/tibet/continuityd-audit.jsonl",
+    vector_version="v1",
+)
+if ok:
+    print("PASS — all 5 vectors match expected disposition + causal chain")
+else:
+    for failure in report.failures:
+        print(failure)
+```
+
+## Versioning policy
+
+Vectors are versioned independently from any implementation. A vector
+version (e.g. `v1`) is **immutable once published**. New vectors get a
+new version directory (`v2/`, `v3/`) so that historical conformance
+claims remain reproducible.
+
+If a vector turns out to be wrong, it gets marked `deprecated` in
+metadata but the byte content stays unchanged.
+
+## Related packages
+
+- `tibet-continuityd` — reference daemon implementation
+- `tibet-drop` — TBZ pack/verify primitives
+- `tibet-phantom` — Identity-Bound Continuity Container
+
+## License
+
+MIT — Humotica + Root AI + Codex (2026)
